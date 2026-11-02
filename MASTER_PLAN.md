@@ -33,6 +33,12 @@ optional Express server for local/self-host.
 - [x] Static hosting: PubMed via direct E-utilities with proxy fallback; hypothesis synthesis via a
       shared rule engine instead of a server-only route.
 - [x] Public repo + GitHub Pages deploy on push to `main`.
+- [x] **UI pass 1 — shell & tokens.** Dark navigation rail + sticky top bar + mobile drawer,
+      graphite/cobalt ramps, self-hosted Inter + JetBrains Mono, card/chip/btn/nav primitives,
+      `PageHeader` and provenance panel components, reduced-motion support.
+- [x] **UI pass 2 — data surfaces.** Corridor schematic replaces the crude SVG map, area-filled
+      lag chart, light milestone card, barrier-index meters in the chemical list, hash routing
+      (`#/chronography`) so any section is directly shareable.
 
 ## Decisions
 
@@ -45,6 +51,11 @@ optional Express server for local/self-host.
   lagged correlation behaves; deleting it loses the method demo. Keeping it unlabelled would be
   misinformation. So: keep, label, and plan to back it with real series.
 - **No claim of causation anywhere.** The site's most defensible output is a list of experiments.
+- **Design tokens over ad-hoc classes.** Neutrals and the accent live in `@theme` in `index.css`;
+  views use `card` / `chip` / `btn` / `eyebrow` primitives rather than re-inventing surface styles.
+  Changing the palette should be a one-file diff.
+- **Deep links are part of sharing.** The tool is meant to be sent to a specific person about a
+  specific symptom; `#/mechanisms`-style routes keep that possible without a router dependency.
 
 ## Roadmap
 
@@ -54,6 +65,8 @@ optional Express server for local/self-host.
 - [ ] Add a citation-integrity test: a script that esummarises every PMID in the dataset and fails
       CI when the returned title does not match (`scripts/verify-citations.ts` + `npm run verify`).
 - [ ] Add an in-app "corrections" page listing what changed and why (public research hygiene).
+- [ ] Dark mode: tokens are already variables, but the views assume light surfaces — needs a
+      systematic pass and a contrast audit before shipping.
 
 ### Phase 2 — real data (the substance)
 - [ ] Replace `CHRONOGRAPHICAL_DATA` with ingested series: FAOSTAT banana/avocado trade volume,

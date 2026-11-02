@@ -89,7 +89,7 @@ export const MolecularMechanismView: React.FC<Props> = ({
                 key={tab.key}
                 onClick={() => setActiveSubSection(tab.key)}
                 aria-pressed={active}
-                className={`flex flex-1 items-center gap-2 rounded-[11px] px-3 py-2 text-left text-[12px] font-medium transition-colors ${
+                className={`flex min-h-[38px] flex-1 items-center gap-2 rounded-[11px] px-3 py-2 text-left text-[12px] font-medium transition-colors ${
                   active
                     ? 'bg-slate-900 text-white shadow-sm'
                     : 'text-slate-600 hover:bg-slate-100'
@@ -122,8 +122,8 @@ export const MolecularMechanismView: React.FC<Props> = ({
                 Both fruits contain homologous Class I endochitinases that cross-react with latex Hev b 6.02, yet manifest with strikingly opposite organ predilections:
               </p>
             </div>
-            <span className="text-xs px-3 py-1 bg-slate-100 rounded-full font-mono text-slate-600">
-              PR-3 Chitinase Family
+            <span className="hidden shrink-0 rounded-full border border-slate-200 bg-white px-3 py-1 font-mono text-[10.5px] text-slate-500 sm:inline-block">
+              PR-3 chitinase family
             </span>
           </div>
 

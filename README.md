@@ -51,6 +51,18 @@ Never add a citation without checking that the PMID/DOI resolves to the paper yo
 earlier draft of this dataset carried six plausible-looking citations of which five pointed at
 unrelated papers; that failure mode is the single biggest risk to a project like this.
 
+## Design system
+
+- One palette in `src/index.css` (`@theme`): graphite neutrals, cobalt accent, softer shadows.
+- Primitives instead of one-off classes: `.card`, `.card-sunk`, `.card-lift`, `.chip`, `.btn`,
+  `.eyebrow`, `.num`, plus `.status-cited / -modelled / -hypothesis` for the provenance tiers.
+- Self-hosted Inter (UI) and JetBrains Mono (identifiers, indices) — latin-subset variable fonts,
+  no external font requests.
+- App shell in `src/components/Shell.tsx` (rail, top bar, mobile drawer); page headers and the
+  provenance panel in `src/components/Chrome.tsx`.
+- Deep links: `#/mechanism`, `#/agrochemicals`, `#/chronography`, `#/literature`, `#/reversal`,
+  `#/hypothesis`.
+
 ## Run it locally
 
 ```bash
