@@ -41,6 +41,20 @@ server.ts                     optional Express host: PubMed proxy, PubChem proxy
 
 Keep data out of components. If a claim lives in JSX, it cannot be audited or labelled.
 
+## Design system
+
+- Palette and type live in `src/index.css` under `@theme` + `:root`. Change the look there, not in
+  component class strings.
+- Use the primitives: `.card`, `.card-sunk`, `.card-lift`, `.chip`, `.chip-active`, `.btn`,
+  `.btn-primary`, `.btn-ghost`, `.eyebrow`, `.num`, and the three `.status-*` pills. A new
+  `bg-white rounded-xl border border-slate-200` string is a regression — it will drift from the
+  token layer.
+- App chrome is `src/components/Shell.tsx`; page headers and the provenance panel are
+  `src/components/Chrome.tsx`. New views should open with `<PageHeader>`.
+- Provenance must stay visible: sidebar legend, header pill, panel, footer. Never bury an evidence
+  status in a tooltip.
+- Motion is limited to `animate-rise` and hover lifts, and dies under `prefers-reduced-motion`.
+
 ## Style
 
 Plain, cautious scientific prose. No hype adjectives, no "revolutionary", no implied cure. Short

@@ -5,6 +5,8 @@ agrochemical handling is changing the allergenic load of the fruit we eat.**
 
 🔗 Live: https://jpalmer95.github.io/allergoscope/
 
+![Mechanisms view](docs/screenshots/mechanisms.png)
+
 AllergoScope exists because adult-onset food allergy is common and badly explained. Roughly
 half of food-allergic US adults developed their allergy as adults (Gupta et al., *JAMA Netw
 Open* 2019). Latex-fruit syndrome — cross-reactivity between natural rubber latex and
@@ -21,7 +23,7 @@ built to make that measurement obvious, cheap and worth doing.
 
 ## What it does
 
-| Tab | Purpose |
+| Section | Purpose |
 | --- | --- |
 | **Molecular & Clinical Mechanisms** | Hevein-domain cross-reactivity, allergen-by-allergen protein records, and why oral vs enteric phenotypes differ |
 | **Agrochemical & Food Cross-Reference** | Registered post-harvest agents, their barrier / PR-protein hypotheses, regulatory history |
