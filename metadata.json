@@ -1,0 +1,6 @@
+{
+  "name": "AllergoScope - Latex-Fruit Syndrome & Agrochemical Environmental Correlation Engine",
+  "description": "Biomedical literature workbench and chronographical agrochemical-allergy correlation platform investigating adult-onset food allergies, latex-fruit cross-reactivity, and delayed environmental triggers.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
