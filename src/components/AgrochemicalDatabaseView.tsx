@@ -195,20 +195,27 @@ export const AgrochemicalDatabaseView: React.FC<Props> = ({
                       </p>
                     </div>
 
-                    {/* Risk Score Pill */}
-                    <div className="text-right">
-                      <div
-                        className={`text-xs font-bold px-2 py-0.5 rounded-full inline-block ${
-                          riskScore >= 75
-                            ? 'bg-red-100 text-red-700 border border-red-200'
-                            : riskScore >= 50
-                            ? 'bg-amber-100 text-amber-800 border border-amber-200'
-                            : 'bg-emerald-100 text-emerald-800 border border-emerald-200'
-                        }`}
-                      >
-                        Risk {riskScore}/100
+                    {/* Barrier index meter */}
+                    <div className="w-[70px] shrink-0 text-right">
+                      <div className="num font-mono text-[13px] font-semibold leading-none text-slate-900">
+                        {riskScore}
+                        <span className="text-[9px] font-normal text-slate-400">/100</span>
                       </div>
-                      <div className="text-[10px] text-slate-400 mt-0.5">Barrier Index</div>
+                      <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-slate-100">
+                        <div
+                          className={`h-full rounded-full ${
+                            riskScore >= 75
+                              ? 'bg-rose-500'
+                              : riskScore >= 50
+                                ? 'bg-amber-500'
+                                : 'bg-emerald-500'
+                          }`}
+                          style={{ width: `${riskScore}%` }}
+                        />
+                      </div>
+                      <div className="mt-1 text-[9px] font-medium uppercase tracking-wider text-slate-400">
+                        modelled
+                      </div>
                     </div>
                   </div>
 
@@ -217,7 +224,7 @@ export const AgrochemicalDatabaseView: React.FC<Props> = ({
                     {chem.targetCrops.map((crop, idx) => (
                       <span
                         key={idx}
-                        className="text-[10px] px-2 py-0.5 bg-slate-100 text-slate-700 rounded-sm font-medium"
+                        className="rounded-md border border-slate-200 bg-white px-1.5 py-0.5 text-[10px] font-medium text-slate-600"
                       >
                         {crop}
                       </span>

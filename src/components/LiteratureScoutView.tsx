@@ -167,7 +167,7 @@ export const LiteratureScoutView: React.FC<Props> = ({ initialSearchQuery = '' }
                   <span className="font-mono font-semibold text-blue-700">PMID: {art.pmid}</span>
                   <span>{art.pubdate}</span>
                 </div>
-                <h4 className="text-sm font-bold text-slate-900 leading-snug line-clamp-2">
+                <h4 className="text-[13px] font-semibold leading-snug text-slate-900">
                   {art.title}
                 </h4>
                 <div className="text-xs text-slate-600 truncate">
@@ -250,7 +250,7 @@ export const LiteratureScoutView: React.FC<Props> = ({ initialSearchQuery = '' }
                 </span>
               </div>
 
-              <h4 className="text-sm font-bold text-slate-900 leading-snug">
+              <h4 className="text-[13px] font-semibold leading-snug text-slate-900">
                 {paper.title}
               </h4>
 
@@ -260,7 +260,7 @@ export const LiteratureScoutView: React.FC<Props> = ({ initialSearchQuery = '' }
                 <span className="font-semibold text-slate-800">{paper.journal} ({paper.year})</span>
               </div>
 
-              <p className="text-xs text-slate-700 leading-relaxed bg-slate-50 p-3 rounded-lg border border-slate-200/80">
+              <p className="card-sunk p-3 text-[11.5px] leading-relaxed text-slate-600">
                 &quot;{paper.abstractSnippet}&quot;
               </p>
 

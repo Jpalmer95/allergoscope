@@ -195,108 +195,77 @@ export const ChronographicalMapView: React.FC<Props> = ({
               </span>
             </div>
 
-            {/* Stylized SVG Map of Key Regions */}
-            <div className="relative bg-slate-900 rounded-xl p-4 text-white overflow-hidden min-h-[260px] flex items-center justify-center">
-              <svg viewBox="0 0 500 280" className="w-full h-auto max-h-[240px]">
-                {/* Landmass outlines - Americas & Europe conceptual geometry */}
-                <path
-                  d="M 60,40 Q 120,30 180,60 Q 220,90 200,130 Q 160,140 130,130 Q 80,110 60,40 Z"
-                  fill="#1E293B"
-                  stroke="#334155"
-                  strokeWidth="1.5"
-                />
-                <text x="120" y="80" fill="#94A3B8" fontSize="10" fontWeight="bold">
-                  NORTH AMERICA
+            {/* Corridor schematic */}
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0b1020] p-3 text-white">
+              <svg viewBox="0 0 500 300" className="h-auto w-full" role="img" aria-label="Agricultural export corridors feeding United States and European Union consumption markets">
+                <defs>
+                  <linearGradient id="corridorA" x1="0" y1="1" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#fbbf24" stopOpacity="0.1" />
+                    <stop offset="100%" stopColor="#fbbf24" stopOpacity="0.85" />
+                  </linearGradient>
+                  <linearGradient id="corridorB" x1="0" y1="1" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#34d399" stopOpacity="0.1" />
+                    <stop offset="100%" stopColor="#34d399" stopOpacity="0.85" />
+                  </linearGradient>
+                  <radialGradient id="nodeGlow">
+                    <stop offset="0%" stopColor="#ffffff" stopOpacity="0.5" />
+                    <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+                  </radialGradient>
+                </defs>
+
+                {/* graticule */}
+                {[60, 120, 180, 240].map((y) => (
+                  <line key={`h${y}`} x1="16" y1={y} x2="484" y2={y} stroke="#ffffff" strokeOpacity="0.04" />
+                ))}
+                {[100, 200, 300, 400].map((x) => (
+                  <line key={`v${x}`} x1={x} y1="16" x2={x} y2="284" stroke="#ffffff" strokeOpacity="0.04" />
+                ))}
+
+                {/* abstract landmasses */}
+                <g fill="#ffffff" fillOpacity="0.055" stroke="#ffffff" strokeOpacity="0.1" strokeWidth="1">
+                  <path d="M96 62c34-18 92-16 118 6 20 17 10 40-16 46-30 7-58 2-78-12-16-11-32-30-24-40Z" />
+                  <path d="M150 128c14 4 24 16 22 30-2 18-14 34-26 44-10 9-20 4-20-10 1-22 8-44 14-58 3-8 6-8 10-6Z" />
+                  <path d="M214 156c30 2 52 26 54 54 2 26-18 52-42 54-22 2-38-22-38-50 0-28 6-56 26-58Z" />
+                  <path d="M330 52c30-8 66-2 78 18 10 17-2 38-26 44-26 7-54 2-66-14-11-15-4-42 14-48Z" />
+                  <path d="M362 132c16-4 30 4 32 18 2 12-10 22-26 22-16 0-28-8-28-20 0-10 8-18 22-20Z" />
+                </g>
+
+                {/* corridors */}
+                <path d="M172 176C168 150 158 122 152 106" fill="none" stroke="url(#corridorA)" strokeWidth="1.6" strokeDasharray="5 4" />
+                <path d="M250 196C232 176 206 156 186 146" fill="none" stroke="url(#corridorB)" strokeWidth="1.6" strokeDasharray="5 4" />
+                <path d="M176 78C240 54 300 62 344 84" fill="none" stroke="#7f8cff" strokeWidth="1.2" strokeOpacity="0.45" strokeDasharray="3 5" />
+
+                {/* nodes */}
+                {[
+                  { x: 176, y: 78, label: 'USA', sub: 'consumption', color: '#7f8cff', region: 'United States' },
+                  { x: 344, y: 84, label: 'EU', sub: 'MRL regime', color: '#a78bfa', region: 'European Union' },
+                  { x: 172, y: 176, label: 'Banana belt', sub: 'CA / EC / CO', color: '#fbbf24', region: 'Central America (Banana Belt)' },
+                  { x: 250, y: 196, label: 'Michoacán', sub: 'avocado', color: '#34d399', region: 'Mexico (Avocado Corridor)' },
+                ].map((n) => {
+                  const isActive = selectedRegion === n.region;
+                  return (
+                    <g
+                      key={n.label}
+                      className="cursor-pointer"
+                      onClick={() => setSelectedRegion(n.region)}
+                      role="button"
+                      aria-label={`Select ${n.label}`}
+                    >
+                      <circle cx={n.x} cy={n.y} r={isActive ? 17 : 13} fill="url(#nodeGlow)" opacity={isActive ? 0.9 : 0.5} />
+                      <circle cx={n.x} cy={n.y} r={isActive ? 5.5 : 4} fill={n.color} stroke="#0b1020" strokeWidth="1.5" />
+                      <text x={n.x + 12} y={n.y - 3} fill="#e8ecf7" fontSize="9.5" fontWeight="600">
+                        {n.label}
+                      </text>
+                      <text x={n.x + 12} y={n.y + 8} fill="#7d879e" fontSize="8" fontFamily="var(--font-mono)">
+                        {n.sub}
+                      </text>
+                    </g>
+                  );
+                })}
+
+                <text x="18" y="292" fill="#5b6480" fontSize="8" fontFamily="var(--font-mono)">
+                  schematic, not to scale
                 </text>
-
-                {/* Central America & Mexico Isthmus */}
-                <path
-                  d="M 130,130 Q 140,160 160,180 Q 170,170 150,140 Z"
-                  fill="#1E293B"
-                  stroke="#334155"
-                  strokeWidth="1.5"
-                />
-
-                {/* South America */}
-                <path
-                  d="M 160,180 Q 220,190 240,230 Q 220,270 180,270 Q 150,230 160,180 Z"
-                  fill="#1E293B"
-                  stroke="#334155"
-                  strokeWidth="1.5"
-                />
-
-                {/* Europe */}
-                <path
-                  d="M 330,50 Q 400,40 420,90 Q 380,120 340,110 Q 320,80 330,50 Z"
-                  fill="#1E293B"
-                  stroke="#334155"
-                  strokeWidth="1.5"
-                />
-                <text x="350" y="80" fill="#94A3B8" fontSize="10" fontWeight="bold">
-                  EUROPE
-                </text>
-
-                {/* Interactive Region 1: Central America Banana Belt */}
-                <g
-                  className="cursor-pointer transition-transform hover:scale-110"
-                  onClick={() => setSelectedRegion('Central America (Banana Belt)')}
-                >
-                  <circle cx="150" cy="165" r="9" fill="#EAB308" opacity="0.8" />
-                  <circle cx="150" cy="165" r="14" fill="#EAB308" opacity="0.3" className="animate-ping" />
-                  <text x="165" y="168" fill="#FDE047" fontSize="9" fontWeight="bold">
-                    Banana Belt (Cavendish monoculture)
-                  </text>
-                </g>
-
-                {/* Interactive Region 2: Mexico Avocado Corridor (Michoacán) */}
-                <g
-                  className="cursor-pointer transition-transform hover:scale-110"
-                  onClick={() => setSelectedRegion('Mexico (Avocado Corridor)')}
-                >
-                  <circle cx="125" cy="140" r="9" fill="#10B981" opacity="0.8" />
-                  <circle cx="125" cy="140" r="14" fill="#10B981" opacity="0.3" className="animate-ping" />
-                  <text x="65" y="155" fill="#6EE7B7" fontSize="9" fontWeight="bold">
-                    Michoacán (Avocado Corridor)
-                  </text>
-                </g>
-
-                {/* Interactive Region 3: United States Domestic Consumption */}
-                <g
-                  className="cursor-pointer transition-transform hover:scale-110"
-                  onClick={() => setSelectedRegion('United States')}
-                >
-                  <circle cx="150" cy="95" r="9" fill="#3B82F6" opacity="0.8" />
-                  <text x="165" y="98" fill="#93C5FD" fontSize="9" fontWeight="bold">
-                    USA (Latex & Food Allergy Surges)
-                  </text>
-                </g>
-
-                {/* Interactive Region 4: European Union Import Inspection */}
-                <g
-                  className="cursor-pointer transition-transform hover:scale-110"
-                  onClick={() => setSelectedRegion('European Union')}
-                >
-                  <circle cx="365" cy="90" r="8" fill="#8B5CF6" opacity="0.8" />
-                  <text x="380" y="94" fill="#C4B5FD" fontSize="9" fontWeight="bold">
-                    EU (MRL Regulation)
-                  </text>
-                </g>
-
-                {/* Trade Flow Arrows */}
-                <path
-                  d="M 150,165 Q 160,130 150,105"
-                  fill="none"
-                  stroke="#EAB308"
-                  strokeWidth="2"
-                  strokeDasharray="4 2"
-                />
-                <path
-                  d="M 125,140 Q 135,115 145,100"
-                  fill="none"
-                  stroke="#10B981"
-                  strokeWidth="2"
-                  strokeDasharray="4 2"
-                />
               </svg>
             </div>
           </div>
@@ -336,18 +305,18 @@ export const ChronographicalMapView: React.FC<Props> = ({
               {/* Legend */}
               <div className="flex items-center space-x-3 text-xs">
                 <span className="flex items-center">
-                  <span className="w-3 h-1 bg-blue-600 rounded mr-1.5"></span>
+                  <span className="mr-1.5 h-1.5 w-1.5 rounded-full bg-blue-600"></span>
                   <span className="text-slate-700 font-medium">Agrochemical Adoption (modelled index)</span>
                 </span>
                 <span className="flex items-center">
-                  <span className="w-3 h-1 bg-rose-500 rounded mr-1.5"></span>
+                  <span className="mr-1.5 h-1.5 w-1.5 rounded-full bg-rose-500"></span>
                   <span className="text-slate-700 font-medium">Allergy Search / Clinical Index (modelled)</span>
                 </span>
               </div>
             </div>
 
             {/* Interactive SVG Chart */}
-            <div className="relative border border-slate-200 rounded-lg p-2 bg-slate-50/50">
+            <div className="relative rounded-2xl border border-[var(--line)] bg-[var(--surface-sunk)] p-2">
               <svg
                 viewBox={`0 0 ${chartWidth} ${chartHeight}`}
                 className="w-full h-auto cursor-crosshair select-none"
@@ -360,6 +329,17 @@ export const ChronographicalMapView: React.FC<Props> = ({
                   setSelectedYear(newYear);
                 }}
               >
+                <defs>
+                  <linearGradient id="chemArea" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#4a4ee0" stopOpacity="0.22" />
+                    <stop offset="100%" stopColor="#4a4ee0" stopOpacity="0" />
+                  </linearGradient>
+                  <linearGradient id="effectArea" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#f43f5e" stopOpacity="0.16" />
+                    <stop offset="100%" stopColor="#f43f5e" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+
                 {/* Horizontal Gridlines */}
                 {[0, 25, 50, 75, 100].map((level) => {
                   const y = chartHeight - padding.bottom - (level / 100) * (chartHeight - padding.top - padding.bottom);
@@ -370,16 +350,14 @@ export const ChronographicalMapView: React.FC<Props> = ({
                         y1={y}
                         x2={chartWidth - padding.right}
                         y2={y}
-                        stroke="#E2E8F0"
-                        strokeDasharray="3 3"
+                        className="grid-line"
+                        strokeWidth="1"
                       />
                       <text
                         x={padding.left - 8}
                         y={y + 3}
-                        fontSize="9"
-                        fill="#94A3B8"
+                        className="axis-label"
                         textAnchor="end"
-                        fontFamily="monospace"
                       >
                         {level}
                       </text>
@@ -396,22 +374,31 @@ export const ChronographicalMapView: React.FC<Props> = ({
                       key={yr}
                       x={x}
                       y={chartHeight - 12}
+                      className="axis-label"
                       fontSize="10"
-                      fill="#64748B"
                       textAnchor="middle"
-                      fontFamily="monospace"
                     >
                       {yr}
                     </text>
                   );
                 })}
 
+                {/* Series fills */}
+                <path
+                  d={`${chemicalPath} L ${padding.left + (chemicalSeries.length - 1) * ((chartWidth - padding.left - padding.right) / (chemicalSeries.length - 1))},${chartHeight - padding.bottom} L ${padding.left},${chartHeight - padding.bottom} Z`}
+                  fill="url(#chemArea)"
+                />
+                <path
+                  d={`${searchPath} L ${padding.left + (searchSeries.length - 1) * ((chartWidth - padding.left - padding.right) / (searchSeries.length - 1))},${chartHeight - padding.bottom} L ${padding.left},${chartHeight - padding.bottom} Z`}
+                  fill="url(#effectArea)"
+                />
+
                 {/* Series 1: Agrochemical Intensity (Blue) */}
                 <path
                   d={chemicalPath}
                   fill="none"
                   stroke="#2563EB"
-                  strokeWidth="2.5"
+                  strokeWidth="2"
                   strokeLinecap="round"
                 />
 
@@ -420,7 +407,7 @@ export const ChronographicalMapView: React.FC<Props> = ({
                   d={searchPath}
                   fill="none"
                   stroke="#F43F5E"
-                  strokeWidth="2.5"
+                  strokeWidth="2"
                   strokeLinecap="round"
                 />
 
@@ -505,60 +492,64 @@ export const ChronographicalMapView: React.FC<Props> = ({
         </div>
       </div>
 
-      {/* Historical Chronographical Milestone Card for Selected Year */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-950 text-white rounded-xl p-6 shadow-md border border-slate-800">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-3">
-          <div className="flex items-center space-x-3">
-            <span className="text-2xl font-black text-amber-400 font-mono">
-              {currentMilestone.year}
-            </span>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/10 text-slate-200 border border-white/20">
-              {currentMilestone.region}
-            </span>
+      {/* Selected-year milestone */}
+      <div className="card relative overflow-hidden">
+        <div className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-blue-500 to-indigo-600" />
+        <div className="p-5 sm:p-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <span className="num font-mono text-[26px] font-bold leading-none tracking-tight text-slate-900">
+                {currentMilestone.year}
+              </span>
+              <span className="chip !cursor-default">{currentMilestone.region}</span>
+            </div>
+            <div className="num flex items-center gap-4 font-mono text-[10.5px] text-slate-500">
+              <span>
+                agrochemical index{' '}
+                <b className="font-semibold text-blue-700">{currentMilestone.agrochemicalUsageIndex}</b>
+              </span>
+              <span>
+                allergy index{' '}
+                <b className="font-semibold text-rose-600">{currentMilestone.googleSearchIndex}</b>
+              </span>
+            </div>
           </div>
 
-          <div className="flex items-center space-x-4 text-xs font-mono">
+          <p className="mt-3 max-w-3xl text-[13.5px] font-medium leading-relaxed text-slate-800">
+            {currentMilestone.historicalMilestone}
+          </p>
+
+          <div className="mt-4 grid gap-3 border-t border-[var(--line)] pt-4 sm:grid-cols-2">
             <div>
-              <span className="text-slate-400">Agrochemical Usage Index (modelled): </span>
-              <span className="font-bold text-blue-400">{currentMilestone.agrochemicalUsageIndex}/100</span>
+              <div className="eyebrow">Dominant chemical regime</div>
+              <div className="mt-1 text-[11.5px] leading-relaxed text-slate-600">
+                {currentMilestone.keyPesticideDominance}
+              </div>
             </div>
             <div>
-              <span className="text-slate-400">Allergy Search Volume Index (modelled): </span>
-              <span className="font-bold text-rose-400">{currentMilestone.googleSearchIndex}/100</span>
+              <div className="eyebrow">Cold chain / storage</div>
+              <div className="mt-1 text-[11.5px] leading-relaxed text-slate-600">
+                {currentMilestone.postHarvestTech}
+              </div>
             </div>
           </div>
-        </div>
 
-        <h4 className="text-base sm:text-lg font-bold text-white mb-2">
-          {currentMilestone.historicalMilestone}
-        </h4>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4 pt-3 border-t border-slate-800 text-xs text-slate-300">
-          <div>
-            <strong className="text-slate-100">Dominant Farming / Chemical Regime:</strong> {currentMilestone.keyPesticideDominance}
-          </div>
-          <div>
-            <strong className="text-slate-100">Cold Chain & Storage Technology:</strong> {currentMilestone.postHarvestTech}
-          </div>
-        </div>
-
-        <div className="mt-4 pt-3 flex flex-wrap items-center justify-between gap-3 text-xs">
-          <button
-            onClick={() => onSearchLiterature(`${currentMilestone.keyPesticideDominance} allergy`)}
-            className="inline-flex items-center text-blue-300 hover:text-blue-100 font-medium"
-          >
-            Search PubMed for {currentMilestone.year} Agricultural Shifts <ExternalLink className="w-3.5 h-3.5 ml-1" />
-          </button>
-
-          {onNavigateToHypothesis && (
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--line)] pt-4">
             <button
-              onClick={onNavigateToHypothesis}
-              className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium flex items-center transition-colors"
+              onClick={() => onSearchLiterature(`${currentMilestone.keyPesticideDominance} allergy`)}
+              className="btn btn-ghost"
             >
-              <Sparkles className="w-3.5 h-3.5 mr-1.5" />
-              Test This Correlation in Hypothesis Studio
+              Search PubMed for this regime
+              <ExternalLink className="h-3.5 w-3.5" />
             </button>
-          )}
+
+            {onNavigateToHypothesis && (
+              <button onClick={onNavigateToHypothesis} className="btn btn-primary">
+                <Sparkles className="h-3.5 w-3.5" />
+                Test this correlation
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>
