@@ -5,6 +5,7 @@ import {
   REVERSAL_THERAPIES
 } from '../data/scientific-data';
 import { buildSynthesis } from '../utils/synthesis';
+import { PageHeader } from './Chrome';
 import {
   Sparkles,
   Loader2,
@@ -102,24 +103,18 @@ export const HypothesisStudioView: React.FC<Props> = ({
 
   return (
     <div className="space-y-6">
-      {/* Header Context */}
-      <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs">
-        <div className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-200 mb-2">
-          <Sparkles className="w-3.5 h-3.5 mr-1" />
-          Translational Research & Environmental Trigger Formulation
-        </div>
-        <h2 className="text-2xl font-bold tracking-tight text-slate-900">
-          Hypothesis Studio &amp; Biomechanistic Reasoning
-        </h2>
-        <p className="text-sm text-slate-600 mt-1 max-w-3xl">
-          Turn a personal observation into a falsifiable brief: pick a food, an agrochemical exposure and a symptom pattern, and the engine lays out what the literature establishes, what it merely suggests, and which experiment would settle it.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Hypothesis studio"
+        tone="violet"
+        icon={<Sparkles className="h-3 w-3" />}
+        title="Turn an observation into something that could be proven wrong"
+        lead="Pick a food, an exposure and a symptom pattern. The engine separates what the literature establishes from what is merely plausible, then states the experiment that would settle it."
+      />
 
       {/* Interactive Formulation Workbench */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Hypothesis Configuration Controls (5 cols) */}
-        <div className="lg:col-span-5 bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
+        <div className="lg:col-span-5 card p-6 space-y-4">
           <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center">
             <FlaskConical className="w-4 h-4 mr-1.5 text-blue-600" /> Research Parameters
           </h3>
@@ -132,7 +127,7 @@ export const HypothesisStudioView: React.FC<Props> = ({
             <select
               value={selectedFood}
               onChange={(e) => setSelectedFood(e.target.value)}
-              className="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2 text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full text-xs bg-white border border-[var(--line-strong)] rounded-[10px] p-2 text-slate-800 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10"
             >
               {FOOD_ALLERGENS.map((f) => (
                 <option key={f.id} value={f.name}>
@@ -150,7 +145,7 @@ export const HypothesisStudioView: React.FC<Props> = ({
             <select
               value={selectedChemical}
               onChange={(e) => setSelectedChemical(e.target.value)}
-              className="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2 text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full text-xs bg-white border border-[var(--line-strong)] rounded-[10px] p-2 text-slate-800 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10"
             >
               {AGROCHEMICALS.map((c) => (
                 <option key={c.id} value={c.name}>
@@ -168,7 +163,7 @@ export const HypothesisStudioView: React.FC<Props> = ({
             <select
               value={selectedSymptom}
               onChange={(e) => setSelectedSymptom(e.target.value)}
-              className="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2 text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full text-xs bg-white border border-[var(--line-strong)] rounded-[10px] p-2 text-slate-800 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10"
             >
               <option value="Visceral Enteric Cramps & Secretory Diarrhea">
                 Visceral Enteric Cramps & Secretory Diarrhea (Banana phenotype)
@@ -193,7 +188,7 @@ export const HypothesisStudioView: React.FC<Props> = ({
             <select
               value={selectedReversal}
               onChange={(e) => setSelectedReversal(e.target.value)}
-              className="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2 text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full text-xs bg-white border border-[var(--line-strong)] rounded-[10px] p-2 text-slate-800 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10"
             >
               {REVERSAL_THERAPIES.map((r) => (
                 <option key={r.id} value={r.name}>
@@ -213,7 +208,7 @@ export const HypothesisStudioView: React.FC<Props> = ({
               value={customNotes}
               onChange={(e) => setCustomNotes(e.target.value)}
               placeholder="Detail your inquiry into delayed environmental triggers, barrier disruption, or desensitization protocols..."
-              className="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2 text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full text-xs bg-white border border-[var(--line-strong)] rounded-[10px] p-2 text-slate-800 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10"
             />
           </div>
 
@@ -221,7 +216,7 @@ export const HypothesisStudioView: React.FC<Props> = ({
           <button
             onClick={handleSynthesize}
             disabled={isLoading}
-            className="w-full py-2.5 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs rounded-lg flex items-center justify-center shadow-xs transition-all disabled:opacity-60"
+            className="btn btn-primary w-full disabled:opacity-60"
           >
             {isLoading ? (
               <>
@@ -236,7 +231,7 @@ export const HypothesisStudioView: React.FC<Props> = ({
         </div>
 
         {/* Right Column: AI Output & Scientific Brief Pane (7 cols) */}
-        <div className="lg:col-span-7 bg-white rounded-xl border border-slate-200 p-6 shadow-xs flex flex-col justify-between">
+        <div className="lg:col-span-7 card p-6 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center space-x-2">

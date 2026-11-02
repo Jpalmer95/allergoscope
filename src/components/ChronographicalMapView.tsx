@@ -4,6 +4,7 @@ import {
   type ChronographicalYearData,
 } from '../data/scientific-data';
 import { calculateLaggedCorrelation } from '../utils/allergy-math';
+import { PageHeader } from './Chrome';
 import {
   Play,
   Pause,
@@ -116,31 +117,24 @@ export const ChronographicalMapView: React.FC<Props> = ({
 
   return (
     <div className="space-y-6">
-      {/* Header Context */}
-      <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 mb-2">
-              <TrendingUp className="w-3.5 h-3.5 mr-1" />
-              Chronographical Correlation Engine (1990 - 2026) · illustrative data
-            </div>
-            <h2 className="text-2xl font-bold tracking-tight text-slate-900">
-              Macro Agricultural Shifts vs. 1-5 Year Delayed Allergic Surges
-            </h2>
-            <p className="text-sm text-slate-600 mt-1 max-w-3xl">
-              Map the historical emergence of modern farming transitions (1-MCP ripening retardation, systemic strobilurins, post-harvest fruit waxes, NAFTA trade corridors) against lagged surges in allergic disease. The series below are hand-curated example values - use the sliders to see how a lagged correlation behaves before substituting FAOSTAT, EFSA/USGS residue-monitoring and clinic data.
-            </p>
-          </div>
+      <PageHeader
+        eyebrow="Chronography · illustrative data"
+        tone="indigo"
+        icon={<TrendingUp className="h-3 w-3" />}
+        title="Do agricultural shifts lead allergic disease by one to five years?"
+        lead="Modern farming transitions — 1-MCP ripening retardation, systemic strobilurins, wax coatings, NAFTA trade corridors — mapped against lagged allergic-disease signals. The series here are hand-curated example values; use the slider to see how a lagged correlation behaves, then substitute real trade, residue and clinic data."
+      />
 
-          {/* Lag Shift Controller Widget */}
-          <div className="bg-indigo-50/70 border border-indigo-200 rounded-xl p-4 flex flex-col justify-center min-w-[240px]">
-            <div className="flex items-center justify-between text-xs font-bold text-indigo-950 mb-1">
-              <span className="flex items-center">
-                <Sliders className="w-3.5 h-3.5 mr-1 text-indigo-600" />
-                Delayed Lag Window (τ):
+      {/* Lag control + readout */}
+      <div className="card mb-6 overflow-hidden">
+        <div className="grid gap-px bg-[var(--line)] sm:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
+          <div className="bg-white p-5">
+            <div className="flex items-center justify-between">
+              <span className="eyebrow flex items-center gap-1.5">
+                <Sliders className="h-3 w-3" /> Lag window
               </span>
-              <span className="font-mono text-sm text-indigo-700 bg-white px-2 py-0.5 rounded border border-indigo-200">
-                +{lagYears} Year{lagYears === 1 ? '' : 's'}
+              <span className="num rounded-md border border-indigo-200 bg-indigo-50 px-2 py-0.5 font-mono text-[12px] font-bold text-indigo-700">
+                +{lagYears} yr
               </span>
             </div>
             <input
@@ -149,42 +143,39 @@ export const ChronographicalMapView: React.FC<Props> = ({
               max={5}
               step={1}
               value={lagYears}
+              aria-label="Lag window in years"
               onChange={(e) => setLagYears(Number(e.target.value))}
-              className="w-full accent-indigo-600 cursor-pointer h-1.5 bg-indigo-200 rounded-lg mt-2"
+              className="mt-3 h-1.5 w-full cursor-pointer rounded-full bg-slate-200 accent-indigo-600"
             />
-            <div className="flex justify-between text-[10px] text-indigo-600 mt-1">
-              <span>0 yr (Instant)</span>
-              <span>1 yr</span>
-              <span>2 yr</span>
-              <span>3 yr</span>
-              <span>4 yr</span>
-              <span>5 yr</span>
+            <div className="num mt-1.5 flex justify-between font-mono text-[9.5px] text-slate-400">
+              {[0, 1, 2, 3, 4, 5].map((y) => (
+                <span key={y}>{y}</span>
+              ))}
             </div>
           </div>
-        </div>
 
-        {/* Statistical Correlation Readout Badge */}
-        <div className="mt-5 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 text-xs">
-          <div className="flex items-center space-x-3">
-            <span className="text-slate-500 font-semibold">Pearson r (illustrative series):</span>
-            <span
-              className={`font-mono text-base font-extrabold px-3 py-1 rounded-lg ${
-                correlationResult.r >= 0.8
-                  ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                  : correlationResult.r >= 0.5
-                  ? 'bg-blue-100 text-blue-800 border border-blue-300'
-                  : 'bg-amber-100 text-amber-800 border border-amber-300'
-              }`}
-            >
-              r = {correlationResult.r.toFixed(3)}
-            </span>
-            <span className="text-slate-700 font-medium">
-              {correlationResult.description} (N = {correlationResult.sampleSize} annual observations)
-            </span>
-          </div>
-
-          <div className="text-amber-700 text-[11px] italic max-w-md sm:text-right">
-            Computed on hand-set example indices - this demonstrates the lag method, it is not an epidemiological finding.
+          <div className="bg-white p-5">
+            <div className="flex items-baseline gap-2">
+              <span className="eyebrow">Pearson r · illustrative</span>
+              <span
+                className={`num ml-auto rounded-md px-2 py-0.5 font-mono text-[15px] font-bold ${
+                  correlationResult.r >= 0.8
+                    ? 'bg-emerald-50 text-emerald-700'
+                    : correlationResult.r >= 0.5
+                      ? 'bg-blue-50 text-blue-700'
+                      : 'bg-amber-50 text-amber-700'
+                }`}
+              >
+                {correlationResult.r.toFixed(3)}
+              </span>
+            </div>
+            <p className="mt-1.5 text-[11.5px] leading-relaxed text-slate-500">
+              {correlationResult.description} (N = {correlationResult.sampleSize} annual observations).
+            </p>
+            <p className="mt-1 text-[10.5px] leading-relaxed text-amber-700">
+              Computed on hand-set example indices — this demonstrates the method, not an
+              epidemiological finding.
+            </p>
           </div>
         </div>
       </div>
@@ -192,7 +183,7 @@ export const ChronographicalMapView: React.FC<Props> = ({
       {/* Dual Interactive Canvas: Global Agricultural Corridor Map & Chronographical Dual Graph */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Interactive Geographic Map View (5 cols) */}
-        <div className="lg:col-span-5 bg-white rounded-xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between">
+        <div className="lg:col-span-5 card p-5 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-bold text-slate-900 flex items-center">
@@ -311,7 +302,7 @@ export const ChronographicalMapView: React.FC<Props> = ({
           </div>
 
           {/* Selected Region Summary */}
-          <div className="mt-4 p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs">
+          <div className="mt-4 p-3 card-sunk text-xs">
             <div className="flex items-center justify-between font-bold text-slate-800">
               <span>Selected Corridor: {selectedRegion}</span>
               <span className="text-blue-600 font-mono">Status @ {selectedYear}</span>
@@ -329,7 +320,7 @@ export const ChronographicalMapView: React.FC<Props> = ({
         </div>
 
         {/* Right Column: Interactive Dual Chronographical Graph & Scrubber (7 cols) */}
-        <div className="lg:col-span-7 bg-white rounded-xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between">
+        <div className="lg:col-span-7 card p-5 flex flex-col justify-between">
           <div>
             <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
               <div>

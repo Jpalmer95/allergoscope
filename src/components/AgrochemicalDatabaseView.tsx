@@ -6,6 +6,7 @@ import {
   type FoodAllergen,
 } from '../data/scientific-data';
 import { computeBarrierDisruptionScore } from '../utils/allergy-math';
+import { PageHeader } from './Chrome';
 import {
   Search,
   Filter,
@@ -66,25 +67,23 @@ export const AgrochemicalDatabaseView: React.FC<Props> = ({
 
   return (
     <div className="space-y-6">
-      {/* Header and Context */}
-      <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 mb-2">
-              <FlaskConical className="w-3.5 h-3.5 mr-1" />
-              Agricultural Chemicals & Food Cross-Reference
-            </div>
-            <h2 className="text-2xl font-bold tracking-tight text-slate-900">
-              Agrochemical Usage, Post-Harvest Sprays & Epithelial Permeability
-            </h2>
-            <p className="text-sm text-slate-600 mt-1 max-w-3xl">
-              Cross-reference fruit ingredients against agricultural chemical registries (fungicides, post-harvest ripening arresters, surfactant adjuvants, and fruit waxes). Investigate how agrochemical exposure degrades mucosal tight junctions and stimulates plants to hyper-express defensive endochitinases.
-            </p>
-          </div>
-        </div>
+      <PageHeader
+        eyebrow="Exposure cross-reference"
+        tone="emerald"
+        icon={<FlaskConical className="h-3 w-3" />}
+        title="Post-harvest chemistry, mucosal barriers, and what is actually measured"
+        lead="Registered fungicides, ripening inhibitors, surfactant adjuvants and fruit waxes, cross-referenced against fruit. Registered uses are established; the barrier and PR-protein tiers are hypothesis-level and labelled as such."
+        actions={
+          <>
+            <span className="chip !cursor-default">8 agents</span>
+            <span className="chip !cursor-default">5 foods</span>
+          </>
+        }
+      />
 
-        {/* Filter Controls Bar */}
-        <div className="mt-6 pt-5 border-t border-slate-100 flex flex-wrap items-center gap-3">
+      {/* Filter Controls */}
+      <div className="card p-4">
+        <div className="flex flex-wrap items-center gap-3">
           {/* Ingredient Pills */}
           <div className="flex items-center flex-wrap gap-1.5">
             <span className="text-xs font-semibold text-slate-500 mr-1">Food Ingredient:</span>
@@ -121,7 +120,7 @@ export const AgrochemicalDatabaseView: React.FC<Props> = ({
             <select
               value={selectedPhase}
               onChange={(e) => setSelectedPhase(e.target.value)}
-              className="text-xs bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1 text-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="text-xs bg-white border border-[var(--line-strong)] rounded-[10px] px-2.5 py-1 text-slate-700 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10"
             >
               <option value="all">All Phases</option>
               <option value="Post-Harvest Dip/Spray">Post-Harvest Dip/Spray</option>
@@ -139,7 +138,7 @@ export const AgrochemicalDatabaseView: React.FC<Props> = ({
               placeholder="Search chemical, trade name, class, or pest..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg pl-8 pr-3 py-1.5 text-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full text-xs bg-white border border-[var(--line-strong)] rounded-[10px] pl-8 pr-3 py-1.5 text-slate-700 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10"
             />
           </div>
         </div>
@@ -229,7 +228,7 @@ export const AgrochemicalDatabaseView: React.FC<Props> = ({
             })}
 
             {filteredChemicals.length === 0 && (
-              <div className="p-8 text-center bg-white rounded-xl border border-slate-200 text-slate-500 text-sm">
+              <div className="card p-8 text-center text-slate-500 text-sm">
                 No chemical compounds match the selected filter criteria.
               </div>
             )}
@@ -238,7 +237,7 @@ export const AgrochemicalDatabaseView: React.FC<Props> = ({
 
         {/* Right Column: Deep Chemical & Biological Inspector Pane (7 cols) */}
         {selectedChemical && (
-          <div className="lg:col-span-7 bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-6">
+          <div className="lg:col-span-7 card p-6 space-y-6">
             {/* Header with PubChem 2D Structure */}
             <div className="flex flex-col sm:flex-row items-start justify-between gap-4 pb-4 border-b border-slate-100">
               <div className="flex-1">
@@ -273,7 +272,7 @@ export const AgrochemicalDatabaseView: React.FC<Props> = ({
               </div>
 
               {/* 2D Chemical Structure Rendered via PubChem PUG REST API */}
-              <div className="w-28 h-28 bg-slate-50 rounded-lg border border-slate-200 p-1 flex items-center justify-center shrink-0">
+              <div className="w-28 h-28 card-sunk p-1 flex items-center justify-center shrink-0">
                 <img
                   src={`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/${selectedChemical.pubchemCid}/PNG?image_size=180x180`}
                   alt={`${selectedChemical.name} 2D Structure`}
@@ -354,7 +353,7 @@ export const AgrochemicalDatabaseView: React.FC<Props> = ({
             </div>
 
             {/* Regulatory Timeline & Policy Shifts */}
-            <div className="p-3.5 bg-slate-50 rounded-lg border border-slate-200 text-xs space-y-2">
+            <div className="p-3.5 card-sunk text-xs space-y-2">
               <div className="font-bold text-slate-900 flex items-center justify-between">
                 <span>Regulatory Status & Global Market Transition</span>
                 <span className="font-mono text-slate-500">Major Shift: ~{selectedChemical.regulatoryStatus.historicalShiftYear}</span>

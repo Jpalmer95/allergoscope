@@ -3,20 +3,54 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
-import { Navbar, type TabKey } from './components/Navbar';
+import React, { useEffect, useState } from 'react';
 import { MolecularMechanismView } from './components/MolecularMechanismView';
 import { AgrochemicalDatabaseView } from './components/AgrochemicalDatabaseView';
 import { ChronographicalMapView } from './components/ChronographicalMapView';
 import { ReversalTherapiesView } from './components/ReversalTherapiesView';
 import { LiteratureScoutView } from './components/LiteratureScoutView';
 import { HypothesisStudioView } from './components/HypothesisStudioView';
-import { DATA_PROVENANCE, MEDICAL_DISCLAIMER, SCOPE_STATEMENT, STATUS_STYLES } from './data/provenance';
-import { Info } from 'lucide-react';
+import { MobileDrawer, Sidebar, TAB_META, TopBar, type TabKey } from './components/Shell';
+import { PageHeader, ProvenancePanel } from './components/Chrome';
+import { MEDICAL_DISCLAIMER, SCOPE_STATEMENT } from './data/provenance';
+import { Info, ShieldAlert } from 'lucide-react';
+
+const VALID_TABS: TabKey[] = [
+  'mechanism',
+  'agrochemicals',
+  'chronography',
+  'literature',
+  'reversal',
+  'hypothesis',
+];
+
+const tabFromHash = (): TabKey => {
+  const raw = window.location.hash.replace(/^#\/?/, '').split('?')[0];
+  return (VALID_TABS as string[]).includes(raw) ? (raw as TabKey) : 'mechanism';
+};
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<TabKey>('mechanism');
+  const [activeTab, setActiveTab] = useState<TabKey>(() => tabFromHash());
+
+  // Deep links: #/chronography etc. so a section can be shared directly.
+  useEffect(() => {
+    const onHash = () => setActiveTab(tabFromHash());
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
+
+  const goToTab = (tab: TabKey) => {
+    setActiveTab(tab);
+    if (window.location.hash !== `#/${tab}`) {
+      window.history.replaceState(null, '', `#/${tab}`);
+    }
+  };
+
+  useEffect(() => {
+    document.title = `${TAB_META[activeTab].label} · AllergoScope`;
+  }, [activeTab]);
   const [showProvenance, setShowProvenance] = useState<boolean>(false);
+  const [navOpen, setNavOpen] = useState<boolean>(false);
   const [selectedFoodId, setSelectedFoodId] = useState<string>('banana');
   const [literatureQuery, setLiteratureQuery] = useState<string>('latex fruit syndrome chitinase');
   const [hypothesisParams, setHypothesisParams] = useState<{ food: string; chemical: string }>({
@@ -28,141 +62,166 @@ export default function App() {
     switch (exampleId) {
       case 'banana':
         setSelectedFoodId('banana');
-        setActiveTab('mechanism');
+        goToTab('mechanism');
         break;
       case 'avocado':
         setSelectedFoodId('avocado');
-        setActiveTab('mechanism');
+        goToTab('mechanism');
         break;
       case '1-mcp':
-        setActiveTab('agrochemicals');
-        break;
       case 'azoxystrobin':
-        setActiveTab('agrochemicals');
-        break;
       case 'poea':
-        setActiveTab('agrochemicals');
+        goToTab('agrochemicals');
         break;
       case 'omalizumab':
-        setActiveTab('reversal');
+        goToTab('reversal');
         break;
       default:
-        setActiveTab('mechanism');
+        goToTab('mechanism');
     }
   };
 
   const handleSearchLiterature = (query: string) => {
     setLiteratureQuery(query);
-    setActiveTab('literature');
+    goToTab('literature');
   };
 
   const handleSelectForHypothesis = (food: string, chem: string) => {
     setHypothesisParams({ food, chemical: chem });
-    setActiveTab('hypothesis');
+    goToTab('hypothesis');
   };
 
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-blue-100 selection:text-blue-900">
-      {/* Top Navigation */}
-      <Navbar
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-        onSelectQuickExample={handleSelectQuickExample}
-      />
+    <div className="min-h-dvh text-slate-800">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:shadow-lg"
+      >
+        Skip to content
+      </a>
 
-      {/* Scope & data provenance banner */}
-      <div className="bg-amber-50/70 border-b border-amber-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 text-xs text-amber-900">
-          <div className="flex items-start sm:items-center justify-between gap-3">
-            <p className="flex items-start leading-relaxed">
-              <Info className="w-3.5 h-3.5 mr-1.5 mt-0.5 shrink-0" />
-              <span>{SCOPE_STATEMENT}</span>
-            </p>
-            <button
-              onClick={() => setShowProvenance((v) => !v)}
-              className="shrink-0 font-semibold underline decoration-dotted hover:text-amber-950"
-            >
-              {showProvenance ? 'Hide data provenance' : 'Data provenance'}
-            </button>
-          </div>
-
-          {showProvenance && (
-            <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-2">
-              {DATA_PROVENANCE.map((d) => (
-                <div key={d.id} className="bg-white/80 border border-amber-200 rounded-lg p-2.5">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="font-bold text-slate-800">{d.label}</span>
-                    <span
-                      className={`text-[10px] font-semibold px-1.5 py-0.5 rounded border ${STATUS_STYLES[d.status].className}`}
-                    >
-                      {STATUS_STYLES[d.status].label}
-                    </span>
-                  </div>
-                  <p className="mt-1 text-[11px] text-slate-600 leading-relaxed">{d.detail}</p>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+      {/* Desktop navigation rail */}
+      <div className="fixed inset-y-0 left-0 z-40 hidden lg:block">
+        <Sidebar
+          activeTab={activeTab}
+          onTabChange={(t) => {
+            goToTab(t);
+            scrollToTop();
+          }}
+          onSelectQuickExample={handleSelectQuickExample}
+        />
       </div>
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {activeTab === 'mechanism' && (
-          <MolecularMechanismView
-            selectedFoodId={selectedFoodId}
-            onSelectFood={setSelectedFoodId}
-            onNavigateToTab={setActiveTab}
-          />
-        )}
+      {/* Mobile navigation drawer */}
+      <MobileDrawer open={navOpen} onClose={() => setNavOpen(false)}>
+        <Sidebar
+          activeTab={activeTab}
+          onTabChange={(t) => {
+            goToTab(t);
+            scrollToTop();
+          }}
+          onSelectQuickExample={handleSelectQuickExample}
+          onClose={() => setNavOpen(false)}
+        />
+      </MobileDrawer>
 
-        {activeTab === 'agrochemicals' && (
-          <AgrochemicalDatabaseView
-            onSearchLiterature={handleSearchLiterature}
-            onSelectIngredientForHypothesis={handleSelectForHypothesis}
-          />
-        )}
+      <div className="lg:pl-[274px]">
+        <TopBar
+          activeTab={activeTab}
+          onOpenNav={() => setNavOpen(true)}
+          onToggleProvenance={() => setShowProvenance((v) => !v)}
+          provenanceOpen={showProvenance}
+        />
 
-        {activeTab === 'chronography' && (
-          <ChronographicalMapView
-            onSearchLiterature={handleSearchLiterature}
-            onNavigateToHypothesis={() => setActiveTab('hypothesis')}
-          />
-        )}
-
-        {activeTab === 'reversal' && (
-          <ReversalTherapiesView
-            onSearchLiterature={handleSearchLiterature}
-            onNavigateToHypothesis={() => setActiveTab('hypothesis')}
-          />
-        )}
-
-        {activeTab === 'literature' && (
-          <LiteratureScoutView initialSearchQuery={literatureQuery} />
-        )}
-
-        {activeTab === 'hypothesis' && (
-          <HypothesisStudioView
-            initialFood={hypothesisParams.food}
-            initialChemical={hypothesisParams.chemical}
-          />
-        )}
-      </main>
-
-      {/* Scientific Workbench Footer */}
-      <footer className="bg-white border-t border-slate-200 py-6 mt-12 text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center space-x-2">
-            <span className="font-bold text-slate-800">AllergoScope</span>
-            <span>•</span>
-            <span>Biomedical Literature, Agrochemical Cross-Reference & Chronographical Correlation Engine</span>
+        <main
+          id="main-content"
+          className="mx-auto w-full max-w-[1200px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-9"
+        >
+          {/* Scope line — always visible, never dismissible */}
+          <div className="mb-6 flex items-start gap-2.5 rounded-xl border border-[var(--line)] bg-white/70 px-4 py-3 text-[11.5px] leading-relaxed text-slate-500 backdrop-blur-sm">
+            <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-blue-600" />
+            <p>
+              {SCOPE_STATEMENT}{' '}
+              <button
+                onClick={() => setShowProvenance((v) => !v)}
+                className="font-semibold text-blue-700 underline decoration-blue-300 decoration-dotted underline-offset-2 hover:text-blue-800"
+              >
+                {showProvenance ? 'Hide the provenance breakdown' : 'See how each dataset is labelled'}
+              </button>
+            </p>
           </div>
-          <div className="flex flex-col sm:flex-row items-center gap-2 sm:space-x-4">
-            <span className="text-slate-400">Live data: NCBI PubMed E-utilities • PubChem PUG REST</span>
-            <span className="text-slate-500 max-w-md sm:text-right">{MEDICAL_DISCLAIMER}</span>
+
+          {showProvenance && <ProvenancePanel onClose={() => setShowProvenance(false)} />}
+
+          <div key={activeTab} className="animate-rise">
+            {activeTab === 'mechanism' && (
+              <MolecularMechanismView
+                selectedFoodId={selectedFoodId}
+                onSelectFood={setSelectedFoodId}
+                onNavigateToTab={goToTab}
+              />
+            )}
+
+            {activeTab === 'agrochemicals' && (
+              <AgrochemicalDatabaseView
+                onSearchLiterature={handleSearchLiterature}
+                onSelectIngredientForHypothesis={handleSelectForHypothesis}
+              />
+            )}
+
+            {activeTab === 'chronography' && (
+              <ChronographicalMapView
+                onSearchLiterature={handleSearchLiterature}
+                onNavigateToHypothesis={() => goToTab('hypothesis')}
+              />
+            )}
+
+            {activeTab === 'reversal' && (
+              <ReversalTherapiesView
+                onSearchLiterature={handleSearchLiterature}
+                onNavigateToHypothesis={() => goToTab('hypothesis')}
+              />
+            )}
+
+            {activeTab === 'literature' && (
+              <LiteratureScoutView initialSearchQuery={literatureQuery} />
+            )}
+
+            {activeTab === 'hypothesis' && (
+              <HypothesisStudioView
+                initialFood={hypothesisParams.food}
+                initialChemical={hypothesisParams.chemical}
+              />
+            )}
           </div>
-        </div>
-      </footer>
+
+          <footer className="mt-12 border-t border-[var(--line)] pt-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div className="max-w-md">
+                <div className="flex items-center gap-2">
+                  <span className="text-[13px] font-semibold tracking-tight text-slate-900">
+                    AllergoScope
+                  </span>
+                  <span className="rounded border border-[var(--line)] bg-white px-1.5 py-0.5 font-mono text-[9.5px] font-medium text-slate-500">
+                    Apache-2.0
+                  </span>
+                </div>
+                <p className="mt-1.5 text-[11px] leading-relaxed text-slate-500">
+                  {TAB_META[activeTab].hint}. Data: NCBI PubMed E-utilities, PubChem PUG REST,
+                  verified primary literature.
+                </p>
+              </div>
+
+              <div className="flex items-start gap-2 rounded-xl border border-amber-200/70 bg-amber-50/60 px-3.5 py-2.5 sm:max-w-sm">
+                <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-700" />
+                <p className="text-[10.5px] leading-relaxed text-amber-900">{MEDICAL_DISCLAIMER}</p>
+              </div>
+            </div>
+          </footer>
+        </main>
+      </div>
     </div>
   );
 }

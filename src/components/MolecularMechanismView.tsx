@@ -6,6 +6,7 @@ import {
 import {
   computeAllergenCrossReactivity
 } from '../utils/allergy-math';
+import { PageHeader } from './Chrome';
 import {
   AlertTriangle,
   CheckCircle2,
@@ -62,63 +63,49 @@ export const MolecularMechanismView: React.FC<Props> = ({
 
   return (
     <div className="space-y-8">
-      {/* Hero Scientific Summary Banner */}
-      <div className="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white rounded-xl p-6 shadow-md border border-blue-800/40">
-        <div className="max-w-4xl">
-          <div className="inline-flex items-center space-x-2 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-200 border border-blue-400/30 mb-3">
-            <Activity className="w-3.5 h-3.5 mr-1" />
-            Biomedical Synthesis & Theoretical Framework
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-2">
-            Why Adults Develop Food Allergies & The Latex-Fruit Paradox
-          </h2>
-          <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-            Investigating how previously tolerated foods suddenly provoke acute clinical reactivity. Unveiling the biophysical basis of why <strong>bananas trigger visceral colic cramps and diarrhea</strong>, while <strong>avocados trigger oral pruritus and angioedema</strong>, despite both sharing the homologous Class I endochitinase Hevein domain.
-          </p>
+      <PageHeader
+        eyebrow="Biomedical synthesis"
+        tone="blue"
+        icon={<Activity className="h-3 w-3" />}
+        title="Why adults develop food allergies — and why latex-fruit splits into two phenotypes"
+        lead="Previously tolerated fruit suddenly provoking acute reactivity. Here is what the literature establishes about the shared class I endochitinase hevein domain, and where the explanations run out."
+        actions={
+          <span className="chip num !cursor-default font-mono">PR-3 chitinase family</span>
+        }
+      />
 
-          {/* Quick Sub-navigation */}
-          <div className="mt-5 flex flex-wrap gap-2">
-            <button
-              onClick={() => setActiveSubSection('divergence')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                activeSubSection === 'divergence'
-                  ? 'bg-blue-500 text-white shadow-xs'
-                  : 'bg-white/10 hover:bg-white/20 text-slate-200'
-              }`}
-            >
-              1. Banana vs. Avocado Symptom Divergence
-            </button>
-            <button
-              onClick={() => setActiveSubSection('sensitization')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                activeSubSection === 'sensitization'
-                  ? 'bg-blue-500 text-white shadow-xs'
-                  : 'bg-white/10 hover:bg-white/20 text-slate-200'
-              }`}
-            >
-              2. Why Adult Allergies Develop (Epithelial Barrier Hypothesis)
-            </button>
-            <button
-              onClick={() => setActiveSubSection('alignment')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                activeSubSection === 'alignment'
-                  ? 'bg-blue-500 text-white shadow-xs'
-                  : 'bg-white/10 hover:bg-white/20 text-slate-200'
-              }`}
-            >
-              3. Hevein Domain Molecular Alignment (43-aa Cysteine Core)
-            </button>
-            <button
-              onClick={() => setActiveSubSection('barrier')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                activeSubSection === 'barrier'
-                  ? 'bg-blue-500 text-white shadow-xs'
-                  : 'bg-white/10 hover:bg-white/20 text-slate-200'
-              }`}
-            >
-              4. Environmental & Agrochemical Triggers
-            </button>
-          </div>
+      {/* Section segmented control */}
+      <div className="card p-1.5">
+        <div className="flex flex-wrap gap-1">
+          {[
+            { key: 'divergence' as const, n: '01', label: 'Banana vs. avocado divergence' },
+            { key: 'sensitization' as const, n: '02', label: 'Why adults develop allergy' },
+            { key: 'alignment' as const, n: '03', label: 'Hevein domain alignment' },
+            { key: 'barrier' as const, n: '04', label: 'Agrochemical triggers' },
+          ].map((tab) => {
+            const active = activeSubSection === tab.key;
+            return (
+              <button
+                key={tab.key}
+                onClick={() => setActiveSubSection(tab.key)}
+                aria-pressed={active}
+                className={`flex flex-1 items-center gap-2 rounded-[11px] px-3 py-2 text-left text-[12px] font-medium transition-colors ${
+                  active
+                    ? 'bg-slate-900 text-white shadow-sm'
+                    : 'text-slate-600 hover:bg-slate-100'
+                }`}
+              >
+                <span
+                  className={`font-mono text-[10px] font-bold ${
+                    active ? 'text-blue-300' : 'text-slate-400'
+                  }`}
+                >
+                  {tab.n}
+                </span>
+                <span className="truncate">{tab.label}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -158,7 +145,7 @@ export const MolecularMechanismView: React.FC<Props> = ({
               </div>
 
               {/* Clinical Symptoms */}
-              <div className="mb-4 bg-white/90 rounded-lg p-3.5 border border-amber-200">
+              <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50/60 p-3.5">
                 <h5 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2 flex items-center text-amber-900">
                   <AlertTriangle className="w-3.5 h-3.5 mr-1 text-amber-600" /> Clinical Symptom Profile
                 </h5>
@@ -211,7 +198,7 @@ export const MolecularMechanismView: React.FC<Props> = ({
               </div>
 
               {/* Clinical Symptoms */}
-              <div className="mb-4 bg-white/90 rounded-lg p-3.5 border border-emerald-200">
+              <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50/60 p-3.5">
                 <h5 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2 flex items-center text-emerald-900">
                   <AlertTriangle className="w-3.5 h-3.5 mr-1 text-emerald-600" /> Clinical Symptom Profile
                 </h5>
@@ -249,25 +236,25 @@ export const MolecularMechanismView: React.FC<Props> = ({
           </div>
 
           {/* Cross-Reactivity Homology Box */}
-          <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
+          <div className="card p-5">
             <h4 className="text-sm font-bold text-slate-900 mb-3 flex items-center">
               <Info className="w-4 h-4 mr-2 text-blue-600" />
               Biophysical Comparison: Why Do Symptoms Express in Different Organs?
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-slate-600">
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
+              <div className="p-3 card-sunk">
                 <div className="font-semibold text-slate-800 mb-1">1. Epithelial Permeation Kinetics</div>
                 <p>
                   Avocado lipids enhance immediate transcellular absorption across oral mucous membranes. Banana carbohydrates form a viscous bolus that shields chitinase molecules until distal transit.
                 </p>
               </div>
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
+              <div className="p-3 card-sunk">
                 <div className="font-semibold text-slate-800 mb-1">2. Pepsin Cleavage Susceptibility</div>
                 <p>
                   Banana Mus a 2 possesses higher thermodynamic denaturation resistance (melting temperature Tm &gt; 74°C), surviving gastric acid. Avocado Pers a 1 is partially hydrolyzed by pepsin, attenuating intestinal shock.
                 </p>
               </div>
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
+              <div className="p-3 card-sunk">
                 <div className="font-semibold text-slate-800 mb-1">3. Mast Cell Subtype Differences</div>
                 <p>
                   Connective tissue mast cells (MC_TC subtype) in the lips/palate express chymase and tryptase, causing immediate wheal/edema. Mucosal mast cells (MC_T subtype) in the gut secrete LTC4 and PGD2, driving peristaltic spasms.
@@ -293,7 +280,7 @@ export const MolecularMechanismView: React.FC<Props> = ({
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Step 1: Occult Sensitization */}
-            <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
+            <div className="card p-5">
               <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-sm mb-3">
                 1
               </div>
@@ -304,7 +291,7 @@ export const MolecularMechanismView: React.FC<Props> = ({
             </div>
 
             {/* Step 2: Epithelial Barrier Breakdown */}
-            <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
+            <div className="card p-5">
               <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-sm mb-3">
                 2
               </div>
@@ -315,7 +302,7 @@ export const MolecularMechanismView: React.FC<Props> = ({
             </div>
 
             {/* Step 3: Loss of Oral Tolerance */}
-            <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
+            <div className="card p-5">
               <div className="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-sm mb-3">
                 3
               </div>
@@ -326,7 +313,7 @@ export const MolecularMechanismView: React.FC<Props> = ({
             </div>
 
             {/* Step 4: Cross-Reactive Explosion */}
-            <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
+            <div className="card p-5">
               <div className="w-8 h-8 rounded-lg bg-red-100 text-red-700 flex items-center justify-center font-bold text-sm mb-3">
                 4
               </div>
@@ -481,7 +468,7 @@ export const MolecularMechanismView: React.FC<Props> = ({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
+            <div className="card p-5">
               <div className="text-red-600 font-bold text-xs uppercase mb-1">Mechanism A</div>
               <h4 className="font-bold text-slate-900 text-sm mb-2">1-MCP (SmartFresh) & Plant Stress Defense</h4>
               <p className="text-xs text-slate-600 leading-relaxed">
@@ -489,7 +476,7 @@ export const MolecularMechanismView: React.FC<Props> = ({
               </p>
             </div>
 
-            <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
+            <div className="card p-5">
               <div className="text-amber-600 font-bold text-xs uppercase mb-1">Mechanism B</div>
               <h4 className="font-bold text-slate-900 text-sm mb-2">Surfactant Adjuvants (POEA & Organosilicones)</h4>
               <p className="text-xs text-slate-600 leading-relaxed">
@@ -497,7 +484,7 @@ export const MolecularMechanismView: React.FC<Props> = ({
               </p>
             </div>
 
-            <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
+            <div className="card p-5">
               <div className="text-indigo-600 font-bold text-xs uppercase mb-1">Mechanism C</div>
               <h4 className="font-bold text-slate-900 text-sm mb-2">Post-Harvest Antifungal Dips & Waxes</h4>
               <p className="text-xs text-slate-600 leading-relaxed">
